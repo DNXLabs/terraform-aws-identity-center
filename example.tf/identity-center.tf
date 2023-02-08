@@ -36,9 +36,9 @@ locals {
       managed_policies = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
       inline_policy    = data.aws_iam_policy_document.ReadOnly-Nonprod.json
       session_duration = "PT1H"
-      tags             = {
-      purpose        = "devops-readonly"
-    }
+      tags = {
+        purpose = "devops-readonly"
+      }
     },
     SSO-Admin-Access = {
       session_duration = "PT1H",
@@ -54,7 +54,7 @@ locals {
       principal_name = "Admin"
       principal_type = "GROUP"
       permission_set = "AdministratorAccess"
-      accounts       = [
+      accounts = [
         "bubletea-audit",
         "bubletea-mgmt",
         "bubletea-nonprod",
@@ -65,7 +65,7 @@ locals {
       principal_name = "Cloudtrail-Read-Only"
       principal_type = "GROUP"
       permission_set = "Cloudtrail-Read-Only"
-      accounts       = [
+      accounts = [
         "bubletea-master"
       ]
     },
@@ -73,7 +73,7 @@ locals {
       principal_name = "user@example.com"
       principal_type = "USER"
       permission_set = "S3-Read-Only-Access"
-      accounts       = [
+      accounts = [
         "bubletea-prod"
       ]
     },
@@ -81,7 +81,7 @@ locals {
       principal_name = "Read-Only-Nonprod"
       principal_type = "GROUP"
       permission_set = "ReadOnly-Nonprod"
-      accounts       = [
+      accounts = [
         "bubletea-nonprod"
       ]
     },
@@ -89,7 +89,7 @@ locals {
       principal_name = "SSO-Admin-Access"
       principal_type = "GROUP"
       permission_set = "SSO-Admin-Access"
-      accounts       = [
+      accounts = [
         "bubletea-master"
       ]
     }
@@ -99,10 +99,10 @@ locals {
 # Inline Policies
 data "aws_iam_policy_document" "S3-Read-Only-Access" {
   statement {
-    effect    = "Allow"
-    actions   = [
+    effect = "Allow"
+    actions = [
       "s3:Get*",
-			"s3:List*"
+      "s3:List*"
     ]
     resources = ["*"]
   }
@@ -110,9 +110,9 @@ data "aws_iam_policy_document" "S3-Read-Only-Access" {
 
 data "aws_iam_policy_document" "ReadOnly-Nonprod" {
   statement {
-    sid       = "VisualEditor0"
-    effect    = "Allow"
-    actions   = [
+    sid    = "VisualEditor0"
+    effect = "Allow"
+    actions = [
       "airflow:ListTagsForResource",
       "airflow:CreateWebLoginToken",
       "airflow:GetEnvironment",
@@ -122,10 +122,10 @@ data "aws_iam_policy_document" "ReadOnly-Nonprod" {
   }
 }
 
-module "identity_center" {  
-  source   = "git::https://github.com/DNXLabs/terraform-aws-identity-center.git?ref=0.1.0"
+module "identity_center" {
+  source = "git::https://github.com/DNXLabs/terraform-aws-identity-center.git?ref=0.1.0"
 
-  permission_sets       = local.workspace.sso.permission_sets
-  accounts              = local.workspace.sso.accounts
-  account_assignments   = local.workspace.sso.account_assignments
+  permission_sets     = local.workspace.sso.permission_sets
+  accounts            = local.workspace.sso.accounts
+  account_assignments = local.workspace.sso.account_assignments
 }

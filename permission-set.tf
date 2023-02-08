@@ -6,8 +6,8 @@ resource "aws_ssoadmin_permission_set" "default" {
   instance_arn     = local.ssoadmin_instance_arn
   relay_state      = lookup(each.value, "relay_state", null)
   session_duration = lookup(each.value, "session_duration", null)
-  
-  tags             = lookup(each.value, "tags", {})
+
+  tags = lookup(each.value, "tags", {})
 }
 
 resource "aws_ssoadmin_permission_set_inline_policy" "default" {

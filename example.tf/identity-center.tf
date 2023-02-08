@@ -125,7 +125,7 @@ data "aws_iam_policy_document" "ReadOnly-Nonprod" {
 module "identity_center" {
   source = "git::https://github.com/DNXLabs/terraform-aws-identity-center.git?ref=0.1.0"
 
-  permission_sets     = local.workspace.sso.permission_sets
-  accounts            = local.workspace.sso.accounts
-  account_assignments = local.workspace.sso.account_assignments
+  accounts            = local.accounts
+  permission_sets     = local.permission_sets
+  account_assignments = local.account_assignments
 }

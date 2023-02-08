@@ -3,7 +3,7 @@ name: Generate terraform docs
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   docs:
@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: master
+        ref: main
 
     - name: Render terraform docs inside the README.md and push changes back to pushed branch
       uses: DNXLabs/terraform-docs@v1.0.0

@@ -7,13 +7,16 @@
 
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12.23 |
+| aws | >= 4.34 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | >= 4.34 |
 
 ## Inputs
 

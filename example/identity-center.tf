@@ -18,29 +18,29 @@ locals {
     }
   }
   permission_sets = {
-    AdministratorAccess = {
+    administrator_access = {
       managed_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
       session_duration = "PT1H"
     },
-    Cloudtrail-Read-Only = {
+    cloudtrail_read_only = {
       description      = "Cloudtrail Read Only Access",
       managed_policies = ["arn:aws:iam::aws:policy/AWSCloudTrailReadOnlyAccess"]
       session_duration = "PT1H"
     },
-    S3-Read-Only-Access = {
+    s3_read_only_access = {
       description      = "Read Only Access to S3 Buckets.",
-      inline_policy    = data.aws_iam_policy_document.S3-Read-Only-Access.json
+      inline_policy    = data.aws_iam_policy_document.s3_read_only_access.json
       session_duration = "PT1H"
     },
-    ReadOnly-Nonprod = {
+    read_only_nonprod = {
       managed_policies = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
-      inline_policy    = data.aws_iam_policy_document.ReadOnly-Nonprod.json
+      inline_policy    = data.aws_iam_policy_document.read_only_nonprod.json
       session_duration = "PT1H"
       tags = {
         purpose = "devops-readonly"
       }
     },
-    SSO-Admin-Access = {
+    sso_admin_access = {
       session_duration = "PT1H",
       managed_policies = [
         "arn:aws:iam::aws:policy/AWSCloudShellFullAccess",
@@ -62,9 +62,9 @@ locals {
       ]
     },
     {
-      principal_name = "Cloudtrail-Read-Only"
+      principal_name = "cloudtrail_read_only"
       principal_type = "GROUP"
-      permission_set = "Cloudtrail-Read-Only"
+      permission_set = "cloudtrail_read_only"
       accounts = [
         "bubletea-master"
       ]
@@ -72,23 +72,23 @@ locals {
     {
       principal_name = "user@example.com"
       principal_type = "USER"
-      permission_set = "S3-Read-Only-Access"
+      permission_set = "s3_read_only_access"
       accounts = [
         "bubletea-prod"
       ]
     },
     {
-      principal_name = "Read-Only-Nonprod"
+      principal_name = "read_only_nonprod"
       principal_type = "GROUP"
-      permission_set = "ReadOnly-Nonprod"
+      permission_set = "read-only_nonprod"
       accounts = [
         "bubletea-nonprod"
       ]
     },
     {
-      principal_name = "SSO-Admin-Access"
+      principal_name = "sso_admin_access"
       principal_type = "GROUP"
-      permission_set = "SSO-Admin-Access"
+      permission_set = "sso_admin_access"
       accounts = [
         "bubletea-master"
       ]
@@ -97,28 +97,43 @@ locals {
 }
 
 # Inline Policies
-data "aws_iam_policy_document" "S3-Read-Only-Access" {
+data "aws_iam_policy_document" "s3_read_only_access" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:Get*",
-      "s3:List*"
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetObject",
+      "s3:GetObjectAcl",
+      "s3:DeleteObject"
     ]
-    resources = ["*"]
+    resources = [
+      "arn:aws:s3:::DOC-EXAMPLE-BUCKET1/",
+      "arn:aws:s3:::DOC-EXAMPLE-BUCKET1/*"
+    ]
   }
 }
 
-data "aws_iam_policy_document" "ReadOnly-Nonprod" {
+data "aws_iam_policy_document" "read_only_nonprod" {
   statement {
     sid    = "VisualEditor0"
     effect = "Allow"
     actions = [
-      "airflow:ListTagsForResource",
-      "airflow:CreateWebLoginToken",
-      "airflow:GetEnvironment",
-      "airflow:ListEnvironments"
+      "dynamodb:BatchGet*",
+      "dynamodb:DescribeStream",
+      "dynamodb:DescribeTable",
+      "dynamodb:Get*",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:BatchWrite*",
+      "dynamodb:CreateTable",
+      "dynamodb:Delete*",
+      "dynamodb:Update*",
+      "dynamodb:PutItem"
     ]
-    resources = ["*"]
+    resources = [
+      "arn:aws:dynamodb:*:*:table/MyTable"
+    ]
   }
 }
 
